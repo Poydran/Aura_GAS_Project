@@ -4,14 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Characters/CharacterMaster.h"
+#include "Interfaces/TargetInterface.h"
 #include "EnemyMaster.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AURA_API AEnemyMaster : public ACharacterMaster
+class AURA_API AEnemyMaster : public ACharacterMaster, public ITargetInterface
 {
 	GENERATED_BODY()
+
+
+public:
+	AEnemyMaster();
+	virtual void HighlightActor() override;
+	virtual void StopHighlight() override;
+
+protected:
+	virtual void BeginPlay() override;
 	
 };

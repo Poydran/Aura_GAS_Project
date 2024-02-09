@@ -14,4 +14,26 @@ class AURA_API AAuraMaster : public ACharacterMaster
 {
 	GENERATED_BODY()
 	
+public:
+
+	AAuraMaster();
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+
+	void SetupGASonAura();
+
+
+
+private:
+
+	//Camera Components
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	TObjectPtr<class UCameraComponent> AuraCamera;
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	TObjectPtr<class USpringArmComponent> AuraSpringArm;
+
+	FTimerHandle ValidationTimer;
+	
+
 };
