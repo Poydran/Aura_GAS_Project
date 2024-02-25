@@ -26,7 +26,7 @@ void AEffectActor::ApplyGameplayEffect(AActor* Target, TSubclassOf<UGameplayEffe
 	if (TargetASC) {
 		FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
 		EffectContextHandle.AddSourceObject(this);
-		FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(EffectClass, 1.0f, EffectContextHandle);
+		FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(EffectClass, Level, EffectContextHandle);
 		const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 
 		if (IsGameplayEffectInfinite(EffectSpecHandle) && InfiniteRemovalPolicy != EEffectRemovalPolicy::ERP_DoNotRemove) 

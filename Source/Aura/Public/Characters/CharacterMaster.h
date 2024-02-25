@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/CombatInterface.h"
 #include "CharacterMaster.generated.h"
 
 //FWD
@@ -12,7 +13,7 @@ class UAbilitySystemComponent;
 class UAttributeSet;
 
 UCLASS(Abstract)
-class AURA_API ACharacterMaster : public ACharacter, public IAbilitySystemInterface
+class AURA_API ACharacterMaster : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -36,9 +37,27 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
+	virtual void SetupGASonAura();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayEffects")
+	TSubclassOf<class UGameplayEffect> PrimaryInitializer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayEffects")
+	TSubclassOf<class UGameplayEffect> SecondaryInitializer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayEffects")
+	TSubclassOf<class UGameplayEffect> VitalInitializer;
+
+	void InitNonVitalAttributes() const;
+	void SelfApplyGameplayEffectProcess(TSubclassOf<class UGameplayEffect> AttributeInitializer) const;
+
+	void AddCharacterAbilities();
 
 private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };

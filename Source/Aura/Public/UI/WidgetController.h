@@ -50,7 +50,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetDataSources(const FDataSources& DataSources);
-
+	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialWidgetValues();
 	virtual void BindCallbacksToDataSources();
 

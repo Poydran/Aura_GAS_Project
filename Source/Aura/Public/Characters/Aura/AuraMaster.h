@@ -19,9 +19,8 @@ public:
 	AAuraMaster();
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-
-	void SetupGASonAura();
-
+	virtual void SetupGASonAura() override;
+	virtual const float GetCombatantLevel() override;
 
 
 private:

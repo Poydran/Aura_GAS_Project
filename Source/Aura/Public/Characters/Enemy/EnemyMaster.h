@@ -21,7 +21,14 @@ public:
 	virtual void HighlightActor() override;
 	virtual void StopHighlight() override;
 
+	virtual const float GetCombatantLevel() override;
+
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void SetupGASonAura() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Level = 1.f;
 	
 };

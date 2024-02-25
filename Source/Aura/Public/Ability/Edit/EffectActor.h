@@ -59,6 +59,9 @@ protected:
 
 	void RemoveEffectOnTargetASC(AActor* TargetActor);
 
+	UPROPERTY(EditAnywhere, Category = "Actor Parameter")
+	float Level = 1.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = StatusEffects)
 	bool bDestroyOnEffectRemoval = false;
 

@@ -1,8 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "Input/AuraEnhancedInputComponent.h"
 #include "Interfaces/TargetInterface.h"
+#include "Player/AuraHUD.h"
+#include "Ability/MasterAbilityComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Player/AuraController.h"
 
 AAuraController::AAuraController()
@@ -45,9 +48,11 @@ void AAuraController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInput = CastChecked<UEnhancedInputComponent>(InputComponent);
-	EnhancedInput->BindAction(IAMove, ETriggerEvent::Triggered, this, &AAuraController::MoveAura);
-
+	UAuraEnhancedInputComponent* AuraEnhancedInput = CastChecked<UAuraEnhancedInputComponent>(InputComponent);
+	AuraEnhancedInput->BindAction(IAMove, ETriggerEvent::Triggered, this, &AAuraController::MoveAura);
+	AuraEnhancedInput->BindAction(IAAttributeOverlay, ETriggerEvent::Started, this, &AAuraController::OpenCloseAttributeWindow);
+	
+	AuraEnhancedInput->BindAbilityActions(InputData, this, &AAuraController::AbilityTagOnPressed, &AAuraController::AbilityTagOnTriggered, &AAuraController::AbilityTagOnReleased);
 
 }
 
@@ -67,6 +72,18 @@ void AAuraController::MoveAura(const FInputActionValue& Value)
 		ControlledPawn->AddMovementInput(RightVector, MovementVector.X);
 
 	}
+}
+
+void AAuraController::OpenCloseAttributeWindow()
+{
+	AAuraHUD* HUD = GetHUD<AAuraHUD>();
+	if (!HUD) return;
+
+	int32 ViewportX;
+	int32 ViewportY;
+	GetViewportSize(ViewportX,ViewportY);
+	FVector2D ViewportSize = FVector2D(ViewportX, ViewportY);
+	HUD->InteractWithAttributeOverlay(ViewportSize);
 }
 
 void AAuraController::TraceMouseCursor()
@@ -127,4 +144,30 @@ void AAuraController::TraceMouseCursor()
 			}
 		}	
 	}
+}
+
+void AAuraController::AbilityTagOnPressed(FGameplayTag InputTag)
+{
+}
+
+void AAuraController::AbilityTagOnReleased(FGameplayTag InputTag)
+{
+	if (GetAuraASC() == nullptr) return;
+	GetAuraASC()->AbilityInputTagReleased(InputTag);
+}
+
+void AAuraController::AbilityTagOnTriggered(FGameplayTag InputTag)
+{
+	if (GetAuraASC() == nullptr) return;
+	GetAuraASC()->AbilityInputTagHeld(InputTag);
+}
+
+UMasterAbilityComponent* AAuraController::GetAuraASC()
+{
+	if (ASC == nullptr)
+	{
+		ASC = Cast <UMasterAbilityComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn()));
+	}
+
+	return	ASC;
 }

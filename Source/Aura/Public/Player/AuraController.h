@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GameplayTags.h"
 #include "AuraController.generated.h"
+
 
 /**
  * 
@@ -13,6 +15,8 @@
 class UInputAction;
 struct FInputActionValue;
 class ITargetInterface;
+class UInputDataAsset;
+class UMasterAbilityComponent;
 
 UCLASS()
 class AURA_API AAuraController : public APlayerController
@@ -41,9 +45,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> IAMove;
 
+	//UIActions
+	UPROPERTY(EditAnywhere, Category = UI)
+	TObjectPtr<UInputAction> IAAttributeOverlay;
+
 	//Mouse Hover Targets for highlighting Actor
 	ITargetInterface* CurrentHitActor;
 	ITargetInterface* LastHitActor;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UInputDataAsset> InputData;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UMasterAbilityComponent> ASC;
 
 	//Funktionen
 
@@ -51,8 +65,15 @@ private:
 	UFUNCTION()
 	void MoveAura(const FInputActionValue& Value);
 
+	void OpenCloseAttributeWindow();
+
+
 	//Trace for Actor under MouseCursor
 	void TraceMouseCursor();
 
-	
+	void AbilityTagOnPressed(FGameplayTag InputTag);
+	void AbilityTagOnReleased(FGameplayTag InputTag);
+	void AbilityTagOnTriggered(FGameplayTag InputTag);
+
+	UMasterAbilityComponent* GetAuraASC();
 };

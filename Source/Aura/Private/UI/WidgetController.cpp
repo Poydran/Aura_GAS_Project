@@ -15,6 +15,7 @@ void UWidgetController::SetDataSources(const FDataSources& DataSources)
 
 void UWidgetController::BroadcastInitialWidgetValues()
 {
+
 }
 
 void UWidgetController::BindCallbacksToDataSources()

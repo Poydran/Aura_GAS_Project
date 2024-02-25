@@ -7,6 +7,8 @@
 #include "Player/AuraController.h"
 #include "Player/AuraState.h"
 #include "AbilitySystemComponent.h"
+
+#include "Ability/MasterAbilityComponent.h"
 #include "Characters/Aura/AuraMaster.h"
 
 AAuraMaster::AAuraMaster()
@@ -41,11 +43,16 @@ void AAuraMaster::SetupGASonAura()
 		AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 		AbilitySystem = AuraPlayerState->GetAbilitySystemComponent();
 		AttributeSet = AuraPlayerState->GetAttributeSet();
+		auto AuraASC =	Cast<UMasterAbilityComponent>(AbilitySystem);
+		AuraASC->AbilityActorInfoSet();
 
 		if (AAuraController* AuraController = Cast<AAuraController>(GetController())) 
 		{
 			if(AAuraHUD* AuraHUD = AuraController->GetHUD<AAuraHUD>()) AuraHUD->InitOverlay(AuraController, AuraPlayerState, AbilitySystem, AttributeSet);
 		}
+
+		InitNonVitalAttributes();
+		AddCharacterAbilities();
 
 	}
 	else 
@@ -54,6 +61,13 @@ void AAuraMaster::SetupGASonAura()
 	}
 	
 
+}
+const float AAuraMaster::GetCombatantLevel()
+{
+
+	if(AAuraState* AuraPlayerState = GetPlayerState<AAuraState>()) return AuraPlayerState->GetPlayerLevel();
+
+	return 0.f  ;
 }
 void AAuraMaster::PossessedBy(AController* NewController)
 {

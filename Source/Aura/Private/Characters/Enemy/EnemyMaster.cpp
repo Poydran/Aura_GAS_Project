@@ -3,6 +3,7 @@
 #include "Aura/Aura.h"
 #include "Ability/MasterAbilityComponent.h"
 #include "Ability/AuraAttributeSet.h"
+#include "Ability/MasterAbilityComponent.h"
 #include "Characters/Enemy/EnemyMaster.h"
 
 
@@ -38,9 +39,23 @@ void AEnemyMaster::StopHighlight()
 	DisableWeaponCustomDepth();
 }
 
+const float AEnemyMaster::GetCombatantLevel()
+{
+	return Level;
+}
+
+
 void AEnemyMaster::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SetupGASonAura();
+	
+}
+
+void AEnemyMaster::SetupGASonAura()
+{
 	AbilitySystem->InitAbilityActorInfo(this, this);
+	auto EnemyASC = Cast<UMasterAbilityComponent>(AbilitySystem);
+	EnemyASC->AbilityActorInfoSet();
 }
