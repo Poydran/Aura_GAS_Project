@@ -25,4 +25,5 @@ public:
 
 	virtual void HighlightActor() = 0;
 	virtual void StopHighlight() = 0;
+
 };

@@ -8,7 +8,7 @@
 
 void UMasterAbilityComponent::AbilityActorInfoSet()
 {
-	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UMasterAbilityComponent::EffectApplied);
+	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UMasterAbilityComponent::ClientEffectApplied);
 
 }
 
@@ -57,7 +57,7 @@ void UMasterAbilityComponent::AbilityInputTagHeld(FGameplayTag InputTag)
 
 }
 
-void UMasterAbilityComponent::EffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+void UMasterAbilityComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);

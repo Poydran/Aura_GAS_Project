@@ -17,6 +17,7 @@ struct FInputActionValue;
 class ITargetInterface;
 class UInputDataAsset;
 class UMasterAbilityComponent;
+class USplineComponent;
 
 UCLASS()
 class AURA_API AAuraController : public APlayerController
@@ -27,6 +28,10 @@ public:
 	AAuraController();
 
 	virtual void PlayerTick(float DeltaTime) override;
+
+	void AutoRun();
+
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -45,6 +50,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UInputAction> IAMove;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UInputAction> IAShift;
+
 	//UIActions
 	UPROPERTY(EditAnywhere, Category = UI)
 	TObjectPtr<UInputAction> IAAttributeOverlay;
@@ -53,11 +61,34 @@ private:
 	ITargetInterface* CurrentHitActor;
 	ITargetInterface* LastHitActor;
 
+	//HitResult of MouseCursor Trace
+	FHitResult CursorHit;
+
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UInputDataAsset> InputData;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMasterAbilityComponent> ASC;
+
+	//Click to Move /start
+	FVector CachedDestination = FVector();
+
+	float FollowTime = 0.f;
+
+	float ShortPressThreshold = 0.5f;
+
+	bool bAutoRunning = false;
+
+	bool bTarget = false;
+
+	bool bIsShiftDown = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.f;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineComponent> PathSpline;
+	//Click to Move /end
 
 	//Funktionen
 
@@ -66,6 +97,9 @@ private:
 	void MoveAura(const FInputActionValue& Value);
 
 	void OpenCloseAttributeWindow();
+
+	void ShiftPressed();
+	void ShiftReleased();
 
 
 	//Trace for Actor under MouseCursor

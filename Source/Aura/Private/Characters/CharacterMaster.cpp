@@ -74,3 +74,9 @@ void ACharacterMaster::AddCharacterAbilities()
 	
 	
 }
+
+FVector ACharacterMaster::ReturnWeaponSocket()
+{
+	check(Weapon);
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}

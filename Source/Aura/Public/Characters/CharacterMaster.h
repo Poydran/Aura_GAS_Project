@@ -53,10 +53,16 @@ protected:
 
 	void AddCharacterAbilities();
 
+	virtual FVector ReturnWeaponSocket() override;
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
+
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	FName WeaponTipSocketName;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;

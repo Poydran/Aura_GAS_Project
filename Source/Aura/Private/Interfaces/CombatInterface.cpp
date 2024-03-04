@@ -9,3 +9,10 @@ const float ICombatInterface::GetCombatantLevel()
 {
 	return 0.0f;
 }
+
+FVector ICombatInterface::ReturnWeaponSocket()
+{
+	return FVector();
+}
+
+
