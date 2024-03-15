@@ -34,4 +34,23 @@ void FAuraGameplayTags::InitializeAuraGameplayTag()
 	GameplayTags.Input_key7 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.key7"), FString("InputAction for Number key 7"));
 	GameplayTags.Input_key8 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.key8"), FString("InputAction for Number key 8"));
 	GameplayTags.Input_key9 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.key9"), FString("InputAction for Number key 9"));
+
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"), FString("Damage"));
+	GameplayTags.FireDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("DamageType.Fire"), FString("FireDamage"));
+	GameplayTags.LightningDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("DamageType.Lightning"), FString("LightningDamage"));
+	GameplayTags.MysticDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("DamageType.Mystic"), FString("MysticDamage"));
+	GameplayTags.PhysicalDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("DamageType.Physical"), FString("PhysicalDamage"));
+
+    GameplayTags.Attributes_FireResistance	= UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Resistance.Fire"), FString("FireResistance"));
+	GameplayTags.Attributes_LightningResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Resistance.Lightning"), FString("LightningResistance"));
+	GameplayTags.Attributes_MysticResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Resistance.Mystic"), FString("MysticResistance"));
+	GameplayTags.Attributes_PhysicalResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Resistance.Physical"), FString("PhysicalResistance"));
+
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.FireDamage, GameplayTags.Attributes_FireResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.LightningDamage, GameplayTags.Attributes_LightningResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.MysticDamage, GameplayTags.Attributes_MysticResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.PhysicalDamage, GameplayTags.Attributes_PhysicalResistance);
+
+	GameplayTags.HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"), FString("Used for Hit React Montage"));
+
 }

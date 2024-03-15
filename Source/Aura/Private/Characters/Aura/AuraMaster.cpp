@@ -31,6 +31,8 @@ AAuraMaster::AAuraMaster()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+
+	Tags.Add(TEXT("Player"));
 }
 
 void AAuraMaster::SetupGASonAura()
@@ -51,7 +53,7 @@ void AAuraMaster::SetupGASonAura()
 			if(AAuraHUD* AuraHUD = AuraController->GetHUD<AAuraHUD>()) AuraHUD->InitOverlay(AuraController, AuraPlayerState, AbilitySystem, AttributeSet);
 		}
 
-		InitNonVitalAttributes();
+		InitDefaultAttributes();
 		AddCharacterAbilities();
 
 	}

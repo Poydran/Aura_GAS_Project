@@ -31,6 +31,8 @@ public:
 
 	void AutoRun();
 
+	UFUNCTION(Client,Reliable)
+	void ShowDamageNumbers(float Damgage, AActor* TargetHit, bool bBlockedHit, bool bCriticalHit);
 	
 
 protected:
@@ -89,6 +91,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> PathSpline;
 	//Click to Move /end
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Widgets")
+	TSubclassOf<class UAuraWidgetComponent> DamageWidgetComponent;
 
 	//Funktionen
 

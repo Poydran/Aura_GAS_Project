@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Ability/GameplayAbilities/AuraGameplayAbility.h"
+#include "Ability/GameplayAbilities/AuraDamageGameplayAbility.h"
 #include "AuraProjectileAbilityMaster.generated.h"
 
 class AAuraProjectile;
 
 UCLASS()
-class AURA_API UAuraProjectileAbilityMaster : public UAuraGameplayAbility
+class AURA_API UAuraProjectileAbilityMaster : public UAuraDamageGameplayAbility
 {
 	GENERATED_BODY()
 	
@@ -21,4 +21,5 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnProjectileFromBP(const FVector& TargetLocation);
+
 };

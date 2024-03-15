@@ -7,6 +7,7 @@
 #include "Ability/MasterAbilityComponent.h"
 #include "Components/SplineComponent.h"
 #include "AuraGameplayTags.h"
+#include "UI/AuraWidgetComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Pawn.h"
 #include "NavigationSystem.h"
@@ -61,6 +62,18 @@ void AAuraController::AutoRun()
 		CurrentPawn->AddMovementInput(Direction);
 		const float DistanceToDestinationPoint = (ClosestSplinePoint - CachedDestination).Length();
 		if (DistanceToDestinationPoint <= AutoRunAcceptanceRadius) bAutoRunning = false;
+	}
+}
+
+void AAuraController::ShowDamageNumbers_Implementation(float Damgage, AActor* TargetHit, bool bBlockedHit, bool bCriticalHit)
+{
+	if (IsValid(TargetHit) && DamageWidgetComponent && IsLocalController())
+	{
+		UAuraWidgetComponent* DamageText = NewObject<UAuraWidgetComponent>(TargetHit, DamageWidgetComponent);
+		DamageText->RegisterComponent();
+		DamageText->AttachToComponent(TargetHit->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageText->PlayDamageText(Damgage,bBlockedHit,bCriticalHit);
 	}
 }
 

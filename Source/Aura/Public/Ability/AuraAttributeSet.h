@@ -114,12 +114,34 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Attributes|Secondary")
 	FGameplayAttributeData MaxHealth;
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FireResistance, Category = "Attributes|Secondary")
+	FGameplayAttributeData FireResistance;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MysticResistance, Category = "Attributes|Secondary")
+	FGameplayAttributeData MysticResistance;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_LightningResistance, Category = "Attributes|Secondary")
+	FGameplayAttributeData LightningResistance;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_PhysicalResistance, Category = "Attributes|Secondary")
+	FGameplayAttributeData PhysicalResistance;
+
+
 	//Vital
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Attributes|Vital")
 	FGameplayAttributeData Health;
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Attributes|Vital")
 	FGameplayAttributeData Mana;
+
+
+	//MetaAttributes
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes|Meta")
+	FGameplayAttributeData IncomingDamage;
+
+
+
 	//Attribute /end
 
 	template<class C>
@@ -178,6 +200,18 @@ public:
 
 	UFUNCTION()
 	void OnRep_BlockChance(const FGameplayAttributeData& OldValue) const;
+
+	UFUNCTION()
+	void OnRep_FireResistance(const FGameplayAttributeData& OldValue) const;
+
+	UFUNCTION()
+	void OnRep_MysticResistance(const FGameplayAttributeData& OldValue) const;
+
+	UFUNCTION()
+	void OnRep_LightningResistance(const FGameplayAttributeData& OldValue) const;
+
+	UFUNCTION()
+	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldValue) const;
 	//Attribute Replication functions /end
 
 	//Getter und Setter Macros für Attribute Properties /start
@@ -197,6 +231,12 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CritResi);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegen);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegen);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, FireResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, LightningResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MysticResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PhysicalResistance);
+	//Meta
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 	//Getter und Setter Macros für Attribute Properties /end
 
 protected:
@@ -205,6 +245,7 @@ protected:
 private:
 
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Properties);
+	void ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit = false, bool bCriticalHit = false);
 };
 
 

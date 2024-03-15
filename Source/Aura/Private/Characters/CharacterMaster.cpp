@@ -3,6 +3,7 @@
 #include "Aura/Aura.h"
 #include "AbilitySystemComponent.h"
 #include "Ability/MasterAbilityComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Characters/CharacterMaster.h"
 
 // Sets default values
@@ -15,6 +16,8 @@ ACharacterMaster::ACharacterMaster()
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Weapon->SetCustomDepthStencilValue(CUSTOM_STENCIL_RED);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
 
 }
 
@@ -34,6 +37,32 @@ UAbilitySystemComponent* ACharacterMaster::GetAbilitySystemComponent() const
 
 }
 
+UAnimMontage* ACharacterMaster::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
+void ACharacterMaster::Die()
+{
+	Weapon->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	MulticastHandleDeath();
+}
+
+void ACharacterMaster::MulticastHandleDeath_Implementation()
+{
+	Weapon->SetEnableGravity(true);
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Dissolve();
+}
+
 // Called when the game starts or when spawned
 void ACharacterMaster::BeginPlay()
 {
@@ -45,7 +74,7 @@ void ACharacterMaster::SetupGASonAura()
 {
 }
 
-void ACharacterMaster::InitNonVitalAttributes() const
+void ACharacterMaster::InitDefaultAttributes() const
 {
 	SelfApplyGameplayEffectProcess(PrimaryInitializer);
 	SelfApplyGameplayEffectProcess(SecondaryInitializer);
@@ -79,4 +108,21 @@ FVector ACharacterMaster::ReturnWeaponSocket()
 {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
+void ACharacterMaster::Dissolve()
+{
+	if (IsValid(DissolveMaterialInst))
+	{
+		UMaterialInstanceDynamic* DynamicMI = UMaterialInstanceDynamic::Create(DissolveMaterialInst, this);
+		GetMesh()->SetMaterial(0, DynamicMI);
+		StartDissolve(DynamicMI);
+	}
+	if (IsValid(WeaponDissolveMaterialInst))
+	{
+		UMaterialInstanceDynamic* DynamicMI = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInst, this);
+		Weapon->SetMaterial(0, DynamicMI);
+		StartDissolveWeapon(DynamicMI);
+
+	}
 }

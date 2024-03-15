@@ -19,10 +19,10 @@ class AURA_API UWidgetMaster : public UUserWidget
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void SetWidgetController(UWidgetController* InWidgetController);
+	void SetWidgetController(UObject* InWidgetController);
 
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UWidgetController> WidgetController;
+	TObjectPtr<UObject> WidgetController;
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void InitWidgetController();

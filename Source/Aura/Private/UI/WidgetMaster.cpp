@@ -3,7 +3,7 @@
 #include "UI/WidgetController.h"
 #include "UI/WidgetMaster.h"
 
-void UWidgetMaster::SetWidgetController(UWidgetController* InWidgetController)
+void UWidgetMaster::SetWidgetController(UObject* InWidgetController)
 {
 	WidgetController = InWidgetController;
 	InitWidgetController();

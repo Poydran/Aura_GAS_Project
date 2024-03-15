@@ -25,6 +25,12 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual void Die() override;
+
+	UFUNCTION(NetMulticast, Reliable, Category = "Character|Death")
+	virtual void MulticastHandleDeath();
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,12 +54,24 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameplayEffects")
 	TSubclassOf<class UGameplayEffect> VitalInitializer;
 
-	void InitNonVitalAttributes() const;
+	virtual void InitDefaultAttributes() const;
 	void SelfApplyGameplayEffectProcess(TSubclassOf<class UGameplayEffect> AttributeInitializer) const;
 
 	void AddCharacterAbilities();
 
 	virtual FVector ReturnWeaponSocket() override;
+
+	void Dissolve();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Character|Death")
+	void StartDissolve(UMaterialInstanceDynamic* DynamicMaterialInstance);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Character|Death")
+	void StartDissolveWeapon(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	UPROPERTY(EditAnywhere, Category = "Character|Material")
+	TObjectPtr<UMaterialInstance> DissolveMaterialInst; 
+	UPROPERTY(EditAnywhere, Category = "Character|Material")
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInst;
 
 private:
 
@@ -66,4 +84,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 };

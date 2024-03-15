@@ -4,6 +4,14 @@
 #include "Ability/MasterAbilityComponent.h"
 #include "Ability/AuraAttributeSet.h"
 #include "Ability/MasterAbilityComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UI/WidgetMaster.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "AuraGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Ability/AuraAbilitySystemFunctionLibrary.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "Characters/Enemy/MasterAIController.h"
 #include "Characters/Enemy/EnemyMaster.h"
 
 
@@ -17,6 +25,11 @@ AEnemyMaster::AEnemyMaster()
 	AbilitySystem->SetIsReplicated(true);
 	AbilitySystem->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("EnemyAttributes"));
+
+	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
+	HealthBarWidgetComponent->SetupAttachment(GetRootComponent());
+
+
 
 }
 
@@ -39,11 +52,36 @@ void AEnemyMaster::StopHighlight()
 	DisableWeaponCustomDepth();
 }
 
+void AEnemyMaster::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!HasAuthority()) return;
+	AIController = CastChecked<AMasterAIController>(NewController);
+
+	AIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	AIController->RunBehaviorTree(BehaviorTree);
+}
+
 const float AEnemyMaster::GetCombatantLevel()
 {
 	return Level;
 }
 
+
+void AEnemyMaster::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewTagCount)
+{
+	 bShouldReact = NewTagCount > 0;
+	 GetCharacterMovement()->MaxWalkSpeed = bShouldReact ? 0.f : BaseWalkSpeed;
+
+
+}
+
+void AEnemyMaster::Die()
+{
+	Super::Die();
+	SetLifeSpan(DeathDespawnTime);
+}
 
 void AEnemyMaster::BeginPlay()
 {
@@ -51,6 +89,39 @@ void AEnemyMaster::BeginPlay()
 	
 	SetupGASonAura();
 	
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+
+	if (UWidgetMaster* UserWidget = Cast < UWidgetMaster >(HealthBarWidgetComponent->GetUserWidgetObject()))
+	{
+		UserWidget->SetWidgetController(this);
+	}
+
+	UAuraAttributeSet* AuraAS = CastChecked<UAuraAttributeSet>(AttributeSet);
+	AbilitySystem->GetGameplayAttributeValueChangeDelegate(AuraAS->GetHealthAttribute()).AddLambda(
+
+		[this](const FOnAttributeChangeData& Data) {
+
+			HealthChange.Broadcast(Data.NewValue);
+		}
+	);
+	AbilitySystem->GetGameplayAttributeValueChangeDelegate(AuraAS->GetMaxHealthAttribute()).AddLambda(
+
+		[this](const FOnAttributeChangeData& Data) {
+
+			MaxHealthChange.Broadcast(Data.NewValue);
+		}
+	);
+
+	if(HasAuthority()) UAuraAbilitySystemFunctionLibrary::GiveStartupAbilities(this, AbilitySystem);
+	
+	
+	AbilitySystem->RegisterGameplayTagEvent(FAuraGameplayTags::Get().HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AEnemyMaster::HitReactTagChanged);
+
+	MaxHealthChange.Broadcast(AuraAS->GetMaxHealth());
+	HealthChange.Broadcast(AuraAS->GetHealth());
+
+	//UE_LOG(LogTemp, Warning, TEXT("HealthValue %f and Name %s"), AuraAS->GetHealth());
+
 }
 
 void AEnemyMaster::SetupGASonAura()
@@ -58,4 +129,13 @@ void AEnemyMaster::SetupGASonAura()
 	AbilitySystem->InitAbilityActorInfo(this, this);
 	auto EnemyASC = Cast<UMasterAbilityComponent>(AbilitySystem);
 	EnemyASC->AbilityActorInfoSet();
+
+	if(HasAuthority()) InitDefaultAttributes();
+	
+	
+}
+
+void AEnemyMaster::InitDefaultAttributes() const
+{
+	UAuraAbilitySystemFunctionLibrary::InitEnemyAttributes(this, EnemyClassType, Level, AbilitySystem);
 }

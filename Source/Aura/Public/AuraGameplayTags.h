@@ -11,6 +11,7 @@
 
 struct FAuraGameplayTags
 {
+
 public:
 	static const FAuraGameplayTags& Get() { return GameplayTags; };
 	static void InitializeAuraGameplayTag();
@@ -42,9 +43,25 @@ public:
 	FGameplayTag Input_key7;
 	FGameplayTag Input_key8;
 	FGameplayTag Input_key9;
-protected:
+
+	FGameplayTag HitReact;
+
+	//DamageTypes
+	FGameplayTag Damage;
+	FGameplayTag FireDamage;
+	FGameplayTag LightningDamage;
+	FGameplayTag MysticDamage;
+	FGameplayTag PhysicalDamage;
 
 
+	//DamageResistances
+
+	FGameplayTag Attributes_FireResistance;
+	FGameplayTag Attributes_LightningResistance;
+	FGameplayTag Attributes_MysticResistance;
+	FGameplayTag Attributes_PhysicalResistance;
+
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
 
 private:
 	static FAuraGameplayTags GameplayTags;

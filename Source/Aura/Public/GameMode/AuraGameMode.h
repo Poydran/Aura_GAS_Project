@@ -9,9 +9,17 @@
 /**
  * 
  */
+
+class UClassInfoAsset;
 UCLASS()
 class AURA_API AAuraGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "EnemyInfoAsset")
+	TObjectPtr< UClassInfoAsset> ClassInfoAsset;
+
 	
 };
